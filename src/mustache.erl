@@ -168,7 +168,7 @@ get(Key, Ctx) ->
 get(Key, Ctx, Mod) when is_list(Key) ->
   get(list_to_atom(Key), Ctx, Mod);
 get(Key, Ctx, Mod) ->
-  case dict:find(Key, Ctx) of
+  Value = case dict:find(Key, Ctx) of
     {ok, Val} ->
       % io:format("From Ctx {~p, ~p}~n", [Key, Val]),
       to_s(Val);
@@ -188,6 +188,12 @@ get(Key, Ctx, Mod) ->
               []
           end
       end
+  end,
+  case Value of
+    B when is_binary(B) ->
+      binary_to_list(B);
+    L ->
+      L
   end.
 
 to_s(Val) when is_integer(Val) ->
